@@ -1,65 +1,70 @@
-Attribute VB_Name = "Module1"
-Sub last_count()
-    ' ÅIsAÅI—ñ
-    Dim global_x, global_y As Integer
-    ' c‚Ì”
-    Dim counter, offset As Integer
-    counter = 1
-    offset = 5
-    counter = counter + offset
-    
-    ' ƒZƒ‹–¼
-    Dim cell As String
-    ' ƒZƒ‹‚ÌŒrüî•ñ(‰º‚Æ‰E)
-    Dim cell_bottom, cell_right As Border
-    
-    
-    ' •\‚Ü‚Å‚Ì‹ó”’ƒZƒ‹s”‚ğ‘ª‚éB
-'    Do
-'        cell = cells(counter, 1).Address
-'        Debug.Print (cell)
-'        ' cell•Ï”‚©‚ç‚ ‚éƒZƒ‹‚Ì‰º‚ÌŒrü‚ğæ“¾‚·‚éB
-'        Set cell_bottom = Range(cell).Borders(xlEdgeBottom)
-'
-'        ' Œrü‚ªŒ©‚Â‚¯‚½‚ç•\‚Ìn‚Ü‚è‚È‚Ì‚Åcounter‚ğ•Û‘¶B
-'        If cell_bottom.LineStyle <> -4142 Then
-'            Debug.Print ("Œrü‚ª‚È‚¢‚Ì‚Åˆ—‚ğI—¹‚µ‚Ü‚·B")
-'            Exit Do
-'        End If
-'        counter = counter + 1
-'    Loop
-    
+Sub get_cell_point()
+    ' ã‚¢ãƒ«ãƒ•ã‚¡ãƒ™ãƒƒãƒˆã‚’æ ¼ç´ã™ã‚‹
+    Dim char(1 To 26) As String
+    Dim alphabetNum As Long
+'    set alphabets
+    For alphabetNum = 1 To 26
+        char(alphabetNum) = Chr(alphabetNum + 64)
+        Next alphabetNum
 
-    ' –³ŒÀloop
-    Do
-        ' ƒZƒ‹–¼‚ğæ“¾‚·‚é
-        cell = cells(counter, 1).Address
-        Debug.Print (cell)
-        ' cell•Ï”‚©‚ç‚ ‚éƒZƒ‹‚Ì‰º‚Æ‰E‚ÌŒrü‚ğæ“¾‚·‚éB
-        Set cell_bottom = Range(cell).Borders(xlEdgeBottom)
-        Set cell_left = Range(cell).Borders(xlEdgeLeft)
+'    With Selection
+'    MsgBox "è¡Œ1ç«¯ã‹ã‚‰ã®åº§æ¨™ã¯" & .Top & "ãƒã‚¤ãƒ³ãƒˆã§ã™ã€‚" & vbCrLf & _
+'       "Aåˆ—ç«¯ã‹ã‚‰ã®åº§æ¨™ã¯" & .Left & "ãƒã‚¤ãƒ³ãƒˆã§ã™ã€‚" & vbCrLf & _
+'       "ã‚»ãƒ«ç¯„å›²ã®é«˜ã•ã®åº§æ¨™ã¯" & .Height & "ãƒã‚¤ãƒ³ãƒˆã§ã™ã€‚" & vbCrLf & _
+'       "ã‚»ãƒ«ç¯„å›²ã®å¹…ã®åº§æ¨™ã¯" & .Width & "ãƒã‚¤ãƒ³ãƒˆã§ã™ã€‚"
+'    End With
 
-        ' ‚à‚µŒrü‚ª‚È‚¢i‰º‚Æ‰E‚ğ“¯‚É’²‚×‚éj
-        If cell_bottom.LineStyle = -4142 And cell_left.LineStyle = -4142 Then
-            Debug.Print ("Œrü‚ª‚È‚¢‚Ì‚Åˆ—‚ğI—¹‚µ‚Ü‚·B")
-'            Debug.Print (counter)
-            Exit Do
-        End If
+    ' è¡¨ã®å·¦ä¸Šã®å€¤ã®ä¿å­˜
+    Dim topLeft() As Variant
+    Dim last As Long
+    last = 100
+    Dim x As Long
+    Dim y As Long
+    ' Cells(ç¸¦, æ¨ª)
+    Dim underLine As Border
+    
+    For y = 1 To 26
+    Debug.Print "----------ã“ã“ã‹ã‚‰" & char(y) & "åˆ—ã§ã™ã€‚----------"
+        For x = 1 To last
+            Set underLine = Cells(x, y).Borders(xlEdgeTop)
+            
+            If underLine.LineStyle = 1 Then
+                Debug.Print "å·¦ä¸Šã®ã‚»ãƒ«ç•ªå·â†’" & char(y) & x
+                Call get_right_of_tabular(x, y, last, char())
+                Exit Sub
+            
+            Else
+               ' GoTo ContinueX
+                Debug.Print "------" & x
+                
+            End If
+            Next x
+            
+        Next y
         
-        ' s‚ğƒJƒEƒ“ƒg
-        counter = counter + 1
-    Loop
-    
-    
-    ' ƒJƒEƒ“ƒg‚µ‚½”‚ğ•\‚Ìs”‚É‚·‚éB
-    global_x = counter
-    Debug.Print ("ÅIs‚Í" & global_x)
-    
-    ' ÅI—ñ‚Ìæ“¾B
-    Dim sheet As Worksheet
-    Set sheet = Worksheets(1)
-    
-    Debug.Print ("ÅI—ñ‚Í" & sheet.UsedRange.Columns(sheet.UsedRange.Columns.Count).Column)
+' ç–‘ä¼¼continueæ–‡
+'ContinueX:
+'    Next x
 
+        
+End Sub
+' è¡¨ã®å³ä¸Šã‚’å–å¾—ã™ã‚‹ã€‚åˆ¤åˆ¥ææ–™ã¯ã‚»ãƒ«å€¤ã¨ä¸Šã®ç½«ç·šãŒã‚ã‚‹ã‹ã€‚
+Sub get_right_of_tabular(num As Long, alp As Long, last As Long, alphaArray() As String)
+    Dim topLine As Border
+    
+    
+    For y = alp To last
+    Debug.Print "-------------------å³ã®æœ€çµ‚åˆ—ã‚’ç¢ºã‹ã‚ã¾ã™ã€‚-------------------"
+    Set topLine = Cells(num, y).Borders(xlEdgeTop)
+        If Cells(num, y).Value = "" And topLine.LineStyle <> 1 Then
+            ' ç©ºç™½ã®ã‚ã£ãŸã‚»ãƒ«å€¤ã®ã²ã¨ã¤å‰ãŒæœ€çµ‚åˆ—ã€‚
+            Debug.Print "å³ä¸Šã®ã‚»ãƒ«ç•ªå·â†’" & alphaArray(y - 1) & num
+            Exit Sub
+        Else
+            Debug.Print "--------------" & alphaArray(y)
+        
+        End If
+        Next y
+            
 End Sub
 
