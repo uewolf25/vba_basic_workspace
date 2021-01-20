@@ -56,7 +56,7 @@ Sub get_right_of_tabular(num As Long, alp As Long, last As Long, alphaArray() As
     For y = alp To last
     Debug.Print "-------------------右の最終列を確かめます。-------------------"
     Set topLine = Cells(num, y).Borders(xlEdgeTop)
-        If Cells(num, y).Value = "" And topLine.LineStyle <> 1 Then
+        If Cells(num, y).Value = "" And topLine.LineStyle = -4142 Then
             ' 空白のあったセル値のひとつ前が最終列。
             Debug.Print "右上のセル番号→" & alphaArray(y - 1) & num
             Exit Sub
@@ -67,4 +67,40 @@ Sub get_right_of_tabular(num As Long, alp As Long, last As Long, alphaArray() As
         Next y
             
 End Sub
+
+' 最終行の取得。
+Sub get_last_row()
+
+    Dim leftY As Long
+    Dim rightY As Long
+    Dim leftLastRow As Long
+    Dim rightLastRow As Long
+    Dim lastRowL As Long
+    Dim lastRowR As Long
+    Dim last As Long
+    
+    ' 列
+    leftY = 2
+    rightY = 16
+    
+    
+    leftLastRow = Cells(Rows.Count, leftY).Row
+    lastRowL = Cells(leftLastRow, leftY).End(xlUp).Row
+    
+    rightLastRow = Cells(Rows.Count, rightY).Row
+    lastRowR = Cells(rightLastRow, rightY).End(xlUp).Row
+    
+    ' 最終行多いほうを保存
+    If lastRowL <= lastRowR Then
+        last = lastRowR
+    ElseIf lastRowL >= lastRowR Then
+        last = lastRowL
+    End If
+    
+    Debug.Print "--------------------最終行は" & last
+    
+End Sub
+
+
+
 
