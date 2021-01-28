@@ -14,6 +14,7 @@ Sub get_cell_point()
 '       "セル範囲の幅の座標は" & .Width & "ポイントです。"
 '    End With
 
+    
     ' 表の左上の値の保存
     Dim topLeft() As Variant
     Dim last As Long
@@ -22,16 +23,18 @@ Sub get_cell_point()
     Dim y As Long
     ' Cells(縦, 横)
     Dim underLine As Border
+    x = 1
+    y = 1
     
-    For y = 1 To 26
+    Do While y <= 26
     Debug.Print "----------ここから" & char(y) & "列です。----------"
         For x = 1 To last
             Set underLine = Cells(x, y).Borders(xlEdgeTop)
             
-            If underLine.LineStyle = 1 Then
-                Debug.Print "左上のセル番号→" & char(y) & x
+            If underLine.LineStyle <> -4142 Then
+                Debug.Print "セル値あり→" & char(y) & x
                 Call get_right_of_tabular(x, y, last, char())
-                Exit Sub
+                Exit Do
             
             Else
                ' GoTo ContinueX
@@ -40,31 +43,29 @@ Sub get_cell_point()
             End If
             Next x
             
-        Next y
-        
-' 疑似continue文
-'ContinueX:
-'    Next x
-
+        y = y + 1
+    Loop
         
 End Sub
 ' 表の右上を取得する。判別材料はセル値と上の罫線があるか。
 Sub get_right_of_tabular(num As Long, alp As Long, last As Long, alphaArray() As String)
     Dim topLine As Border
+    Dim y As Long
+    y = alp
+    Do While y <= last
     
-    
-    For y = alp To last
     Debug.Print "-------------------右の最終列を確かめます。-------------------"
     Set topLine = Cells(num, y).Borders(xlEdgeTop)
         If Cells(num, y).Value = "" And topLine.LineStyle = -4142 Then
             ' 空白のあったセル値のひとつ前が最終列。
             Debug.Print "右上のセル番号→" & alphaArray(y - 1) & num
-            Exit Sub
+            Exit Do
         Else
             Debug.Print "--------------" & alphaArray(y)
         
         End If
-        Next y
+        y = y + 1
+    Loop
             
 End Sub
 
@@ -84,11 +85,11 @@ Sub get_last_row()
     rightY = 16
     
     
-    leftLastRow = Cells(Rows.Count, leftY).Row
-    lastRowL = Cells(leftLastRow, leftY).End(xlUp).Row
+    leftLastRow = Cells(Rows.Count, leftY).row
+    lastRowL = Cells(leftLastRow, leftY).End(xlUp).row
     
-    rightLastRow = Cells(Rows.Count, rightY).Row
-    lastRowR = Cells(rightLastRow, rightY).End(xlUp).Row
+    rightLastRow = Cells(Rows.Count, rightY).row
+    lastRowR = Cells(rightLastRow, rightY).End(xlUp).row
     
     ' 最終行多いほうを保存
     If lastRowL <= lastRowR Then
@@ -101,6 +102,70 @@ Sub get_last_row()
     
 End Sub
 
+' 横方向のセルの罫線から次の罫線までのセル数を取得。
+Sub get_width()
+    Dim rightLine As Border
+    ' 列
+    Dim row As Long
+    row = 5
+    ' 行
+    Dim col As Long
+    col = 8
+    
+    Do While row < 100
+        Debug.Print Cells(col, row).Address & vbCrLf
+        Set rightLine = Cells(col, row).Borders(xlEdgeRight)
+        ' 罫線があるとき
+        If rightLine.LineStyle <> -4142 Then
+            Debug.Print "結合セルはここまで：" & Cells(col, row).Address & vbCrLf
+            Exit Do
+        End If
+        '１つ右へ
+        row = row + 1
+    Loop
+    
+End Sub
 
+' 縦方向のセルの罫線から次の罫線までのセル数を取得。
+Sub get_height()
+    Dim bottomLine As Border
+    ' 列
+    Dim row As Long
+    row = 5
+    ' 行
+    Dim col As Long
+    col = 8
+    
+    Do While col < 100
+        Debug.Print Cells(col, row).Address(True, False) & vbCrLf
+        Set bottomLine = Cells(col, row).Borders(xlEdgeBottom)
+        ' 罫線があるとき
+        If bottomLine.LineStyle <> -4142 Then
+            'bottomLine = Left(bottomLine, InStr(bottomLine, "$") - 1)
+            Debug.Print "結合セルはここまで：" & Cells(col, row).Address & vbCrLf
+            Exit Do
+        End If
+        '１つ右へ
+        col = col + 1
+    Loop
 
-
+End Sub
+' ヘッダー内の縦幅の座標を取得。
+Sub get_point_row_header()
+    Dim startX As Long
+    Dim startY As Long
+    Dim endX As Long
+    Dim endY As Long
+    
+    startX = 2
+    startY = 8
+    endX = 3
+    endY = 17
+    
+    Range(Cells(startY, startX), Cells(endY, endX)).Select
+    With Selection
+    Debug.Print "セル範囲の高さの座標は" & .Height & "ポイントです。" & vbCrLf & _
+       "セル範囲の幅の座標は" & .Width & "ポイントです。" & vbCrLf
+    End With
+    
+End Sub
